@@ -1,12 +1,9 @@
 # Use r-base image from rocker
 FROM rocker/r-base:latest
 
-# Create dmeyf directories
-RUN mkdir -p ~/datasets
-RUN mkdir -p ~/datasetsOri
-RUN mkdir -p ~/kaggle
-RUN mkdir -p ~/work
-RUN mkdir -p ~/TareasHogar
+# Compile with more than one thread
+RUN mkdir -p ~/.R
+RUN echo "MAKEFLAGS=-j8" > ~/.R/Makevars
 
 # Install system packages
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
@@ -14,7 +11,9 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     libudunits2-dev \
     libgdal-dev \
     libcurl4-openssl-dev \
-    libssl-dev
+    libssl-dev \
+    git \
+    cmake
 
 # Use script to handle install.packages failures
 ADD install_R_package.R /
@@ -64,12 +63,15 @@ RUN Rscript --no-save install_R_package.R \
 
 # Boosting
 RUN Rscript --no-save install_R_package.R \
-    xgboost \
-    lightgbm
+    xgboost 
 
 # Bayesian Optimization
 RUN Rscript --no-save install_R_package.R \
     DiceKriging \
     mlrMBO
+
+RUN git clone --recursive https://github.com/Microsoft/LightGBM
+RUN cd LightGBM && Rscript ./build_r.R && cd .. && rm -rf LightGBM
+
 
 CMD ["R"]
