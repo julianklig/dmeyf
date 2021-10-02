@@ -37,7 +37,7 @@ setwd( directory.root )
 
 
 
-kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
+kexperimento  <- 1026   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
 kscript           <- "682_lgb_prob_auto"
 karch_generacion  <- "./datasets/paquete_premium_202009_ext.csv"
@@ -48,8 +48,10 @@ kBO_iter    <- 200  #cantidad de iteraciones de la Optimizacion Bayesiana
 hs <- makeParamSet(
          makeNumericParam("learning_rate",    lower= 0.01  , upper= 0.1),
          makeNumericParam("feature_fraction", lower= 0.2   , upper= 1.0),
-         makeIntegerParam("min_data_in_leaf", lower= 100L , upper= 8000L),
+         makeNumericParam("lambda_l1",        lower= 0.01  , upper= 5.0),
+         makeIntegerParam("min_data_in_leaf", lower= 100L  , upper= 8000L),
          makeIntegerParam("num_leaves",       lower= 128L  , upper= 2048L),
+         #makeIntegerParam("max_bin",          lower= 25L   , upper= 63L),
          makeIntegerParam("max_depth",        lower= 7L    , upper= 14L),
          makeIntegerParam("num_iterations",   lower= 50L   , upper= 2000L)
         )
@@ -141,10 +143,10 @@ EstimarGanancia_lightgbm  <- function( x )
                           seed= 999983,
                           #max_depth=  -1,         # -1 significa no limitar,  por ahora lo dejo fijo
                           min_gain_to_split= 0.0, #por ahora, lo dejo fijo
-                          lambda_l1= 0.0,         #por ahora, lo dejo fijo
+                          #lambda_l1= 0.0,         #por ahora, lo dejo fijo
                           lambda_l2= 0.0,         #por ahora, lo dejo fijo
                           max_bin= 63,            #por ahora, lo dejo fijo
-                          #num_iterations= 9999,    #un numero muy grande, lo limita early_stopping_rounds
+                          num_iterations= 9999,    #un numero muy grande, lo limita early_stopping_rounds
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
                         )
 

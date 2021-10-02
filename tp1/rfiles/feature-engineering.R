@@ -19,14 +19,19 @@ EnriquecerDataset <- function( dataset , arch_destino )
   columnas_originales <-  copy(colnames( dataset ))
 
   campos_malos <- c(
-		   "ccajas_transacciones",
-  		   "Master_mpagominimo",
-  		   "internet",
-  		   "mcajeros_propios_descuentos",
-  		   "mtarjeta_visa_descuentos",
-  		   "mtarjeta_master_descuentos",
-  		   "tmobile_app",
-  		   "cmobile_app_trx"
+           "ccajas_transacciones",
+           "Master_mpagominimo",
+           "internet",
+           "mcajeros_propios_descuentos",
+           "mtarjeta_visa_descuentos",
+           "mtarjeta_master_descuentos",
+           "tmobile_app",
+           "cmobile_app_trx",
+           "Visa_fultimo_cierre",
+           "Master_fultimo_cierre",
+           "chomebanking_transacciones",
+           "Visa_Finiciomora",
+           "Master_Finiciomora"
   )   #aqui se deben cargar todos los campos culpables del Data Drifting
 
   # Elimino todas las variables con data drift
@@ -56,7 +61,7 @@ EnriquecerDataset <- function( dataset , arch_destino )
   dataset[ , mv_mfinanciacion_limite := rowSums( cbind( Master_mfinanciacion_limite,  Visa_mfinanciacion_limite) , na.rm=TRUE ) ]
 
   dataset[ , mv_Fvencimiento         := pmin( Master_Fvencimiento, Visa_Fvencimiento, na.rm = TRUE) ]
-  dataset[ , mv_Finiciomora          := pmin( Master_Finiciomora, Visa_Finiciomora, na.rm = TRUE) ]
+  #dataset[ , mv_Finiciomora          := pmin( Master_Finiciomora, Visa_Finiciomora, na.rm = TRUE) ]
   dataset[ , mv_msaldototal          := rowSums( cbind( Master_msaldototal,  Visa_msaldototal) , na.rm=TRUE ) ]
   dataset[ , mv_msaldopesos          := rowSums( cbind( Master_msaldopesos,  Visa_msaldopesos) , na.rm=TRUE ) ]
   dataset[ , mv_msaldodolares        := rowSums( cbind( Master_msaldodolares,  Visa_msaldodolares) , na.rm=TRUE ) ]
@@ -65,7 +70,7 @@ EnriquecerDataset <- function( dataset , arch_destino )
   dataset[ , mv_mlimitecompra        := rowSums( cbind( Master_mlimitecompra,  Visa_mlimitecompra) , na.rm=TRUE ) ]
   dataset[ , mv_madelantopesos       := rowSums( cbind( Master_madelantopesos,  Visa_madelantopesos) , na.rm=TRUE ) ]
   dataset[ , mv_madelantodolares     := rowSums( cbind( Master_madelantodolares,  Visa_madelantodolares) , na.rm=TRUE ) ]
-  dataset[ , mv_fultimo_cierre       := pmax( Master_fultimo_cierre, Visa_fultimo_cierre, na.rm = TRUE) ]
+  #dataset[ , mv_fultimo_cierre       := pmax( Master_fultimo_cierre, Visa_fultimo_cierre, na.rm = TRUE) ]
   dataset[ , mv_mpagado              := rowSums( cbind( Master_mpagado,  Visa_mpagado) , na.rm=TRUE ) ]
   dataset[ , mv_mpagospesos          := rowSums( cbind( Master_mpagospesos,  Visa_mpagospesos) , na.rm=TRUE ) ]
   dataset[ , mv_mpagosdolares        := rowSums( cbind( Master_mpagosdolares,  Visa_mpagosdolares) , na.rm=TRUE ) ]
