@@ -18,25 +18,6 @@ EnriquecerDataset <- function( dataset , arch_destino )
 {
   columnas_originales <-  copy(colnames( dataset ))
 
-  campos_malos <- c(
-           "ccajas_transacciones",
-           "Master_mpagominimo",
-           "internet",
-           "mcajeros_propios_descuentos",
-           "mtarjeta_visa_descuentos",
-           "mtarjeta_master_descuentos",
-           "tmobile_app",
-           "cmobile_app_trx",
-           "Visa_fultimo_cierre",
-           "Master_fultimo_cierre",
-           "chomebanking_transacciones",
-           "Visa_Finiciomora",
-           "Master_Finiciomora"
-  )   #aqui se deben cargar todos los campos culpables del Data Drifting
-
-  # Elimino todas las variables con data drift
-  dataset[, (campos_malos):=NULL ]
-
   #INICIO de la seccion donde se deben hacer cambios con variables nuevas
   #se crean los nuevos campos para MasterCard  y Visa, teniendo en cuenta los NA's
   #varias formas de combinar Visa_status y Master_status
@@ -61,7 +42,7 @@ EnriquecerDataset <- function( dataset , arch_destino )
   dataset[ , mv_mfinanciacion_limite := rowSums( cbind( Master_mfinanciacion_limite,  Visa_mfinanciacion_limite) , na.rm=TRUE ) ]
 
   dataset[ , mv_Fvencimiento         := pmin( Master_Fvencimiento, Visa_Fvencimiento, na.rm = TRUE) ]
-  #dataset[ , mv_Finiciomora          := pmin( Master_Finiciomora, Visa_Finiciomora, na.rm = TRUE) ]
+  dataset[ , mv_Finiciomora          := pmin( Master_Finiciomora, Visa_Finiciomora, na.rm = TRUE) ]
   dataset[ , mv_msaldototal          := rowSums( cbind( Master_msaldototal,  Visa_msaldototal) , na.rm=TRUE ) ]
   dataset[ , mv_msaldopesos          := rowSums( cbind( Master_msaldopesos,  Visa_msaldopesos) , na.rm=TRUE ) ]
   dataset[ , mv_msaldodolares        := rowSums( cbind( Master_msaldodolares,  Visa_msaldodolares) , na.rm=TRUE ) ]
@@ -78,7 +59,7 @@ EnriquecerDataset <- function( dataset , arch_destino )
   dataset[ , mv_mconsumototal        := rowSums( cbind( Master_mconsumototal,  Visa_mconsumototal) , na.rm=TRUE ) ]
   dataset[ , mv_cconsumos            := rowSums( cbind( Master_cconsumos,  Visa_cconsumos) , na.rm=TRUE ) ]
   dataset[ , mv_cadelantosefectivo   := rowSums( cbind( Master_cadelantosefectivo,  Visa_cadelantosefectivo) , na.rm=TRUE ) ]
-  #dataset[ , mv_mpagominimo          := rowSums( cbind( Master_mpagominimo,  Visa_mpagominimo) , na.rm=TRUE ) ]
+  dataset[ , mv_mpagominimo          := rowSums( cbind( Master_mpagominimo,  Visa_mpagominimo) , na.rm=TRUE ) ]
 
   #a partir de aqui juego con la suma de Mastercard y Visa
   dataset[ , mvr_Master_mlimitecompra:= Master_mlimitecompra / mv_mlimitecompra ]
@@ -96,14 +77,14 @@ EnriquecerDataset <- function( dataset , arch_destino )
   dataset[ , mvr_mpagospesos         := mv_mpagospesos / mv_mlimitecompra ]
   dataset[ , mvr_mpagosdolares       := mv_mpagosdolares / mv_mlimitecompra ]
   dataset[ , mvr_mconsumototal       := mv_mconsumototal  / mv_mlimitecompra ]
-  #dataset[ , mvr_mpagominimo         := mv_mpagominimo  / mv_mlimitecompra ]
+  dataset[ , mvr_mpagominimo         := mv_mpagominimo  / mv_mlimitecompra ]
 
   # Deudas totales del cliente
   dataset[ , mdeudas                := rowSums( cbind( mv_msaldototal, mprestamos_hipotecarios, mprestamos_prendarios, mprestamos_personales ), na.rm=TRUE ) ]
   dataset[ , mrdeudas               := mdeudas / mcuentas_saldo ]
 
   #valvula de seguridad para evitar valores infinitos
-  #paso los infinitos a NULOS
+  #paso los infinitos a NA
   infinitos      <- lapply(names(dataset),function(.name) dataset[ , sum(is.infinite(get(.name)))])
   infinitos_qty  <- sum( unlist( infinitos) )
   if( infinitos_qty > 0 )
@@ -114,8 +95,7 @@ EnriquecerDataset <- function( dataset , arch_destino )
 
 
   #valvula de seguridad para evitar valores NaN  que es 0/0
-  #paso los NaN a 0 , decision polemica si las hay
-  #se invita a asignar un valor razonable segun la semantica del campo creado
+  #paso los NaN a NA
   nans      <- lapply(names(dataset),function(.name) dataset[ , sum(is.nan(get(.name)))])
   nans_qty  <- sum( unlist( nans) )
   if( nans_qty > 0 )
@@ -140,10 +120,11 @@ dir.create( "./datasets/" )
 
 
 #lectura rapida del dataset  usando fread  de la libreria  data.table
-dataset1  <- fread("./datasetsOri/paquete_premium_202009.csv")
-dataset2  <- fread("./datasetsOri/paquete_premium_202011.csv")
+dataset1  <- fread("./datasets/paquete_premium_202009_dedrifted.csv")
+dataset2  <- fread("./datasets/paquete_premium_202011_dedrifted.csv")
 
 EnriquecerDataset( dataset1, "./datasets/paquete_premium_202009_ext.csv" )
 EnriquecerDataset( dataset2, "./datasets/paquete_premium_202011_ext.csv" )
 
-quit( save="no")
+#Don't quit unless we are not part of the pipeline
+#quit( save="no")
