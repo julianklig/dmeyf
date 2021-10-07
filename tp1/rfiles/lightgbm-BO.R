@@ -37,12 +37,12 @@ setwd( directory.root )
 
 
 
-kexperimento  <- 1026   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
+kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
 kscript           <- "682_lgb_prob_auto"
 karch_generacion  <- "./datasets/paquete_premium_202009_ext.csv"
 karch_aplicacion  <- "./datasets/paquete_premium_202011_ext.csv"
-kBO_iter    <- 200  #cantidad de iteraciones de la Optimizacion Bayesiana
+kBO_iter    <- 150  #cantidad de iteraciones de la Optimizacion Bayesiana
 
 #Aqui se cargan los hiperparametros
 hs <- makeParamSet(
