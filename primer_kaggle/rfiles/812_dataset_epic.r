@@ -23,7 +23,7 @@ setwd( directory.root )
 
 palancas  <- list()  #variable con las palancas para activar/desactivar
 
-palancas$version  <- "v001"   #Muy importante, ir cambiando la version
+palancas$version  <- "v002"   #Muy importante, ir cambiando la version
 
 # Aqui van las columnas que se quieren eliminar
 palancas$variablesdrift <- c("internet",
@@ -283,6 +283,31 @@ AgregarVariables  <- function( dataset )
 
   #Aqui debe usted agregar sus propias nuevas variables
 
+  # Deudas totales del cliente
+  dataset[ , mdeudas                := rowSums( cbind( mv_msaldototal, mprestamos_hipotecarios, mprestamos_prendarios, mprestamos_personales ), na.rm=TRUE ) ]
+  dataset[ , mrdeudas               := mdeudas / mcuentas_saldo ]
+
+  # Transacciones totales y ratio con saldos
+  dataset[ , ctrx_full              := ctrx_quarter + cpayroll_trx + ctarjeta_visa_transacciones + ctarjeta_master_transacciones + ctarjeta_debito_transacciones ]
+  dataset[ , cr_trx_payroll         := cpayroll_trx / ctrx_full ]
+  dataset[ , mr_saldo_ctrx          := mcuentas_saldo / ctrx_full ]
+
+  # Ratio del descubierto con la edad
+  dataset[ , mrdescubierto_edad     := mdescubierto_preacordado / cliente_edad ]
+
+  # Ratio de uso de tarjeta de debito
+  dataset[ , mrautoservicio         := mautoservicio / mcuentas_saldo ]
+
+  # Suma y ratios de ingresos al banco
+  dataset[ , mingresos_total        := mpayroll + mpayroll2 + mtransferencias_recibidas + mcheques_depositados ]
+  dataset[ , mringresos_total       := mingresos_total / mcuentas_saldo ]
+  dataset[ , mrctrx_ingresos_total  := mingresos_total / ctrx_full ]
+
+  # Suma y ratio de todos los debitos automáticos y los pagos de servicios
+  dataset[ , mdebitos_total         := mcuenta_debitos_automaticos + mttarjeta_visa_debitos_automaticos + mttarjeta_master_debitos_automaticos + mpagodeservicios + mpagomiscuentas ]
+  dataset[ , mrdebitos_total        := mdebitos_total / mcuentas_saldo ]
+
+
   #valvula de seguridad para evitar valores infinitos
   #paso los infinitos a NULOS
   infinitos      <- lapply(names(dataset),function(.name) dataset[ , sum(is.infinite(get(.name)))])
@@ -303,7 +328,7 @@ AgregarVariables  <- function( dataset )
   {
     cat( "ATENCION, hay", nans_qty, "valores NaN 0/0 en tu dataset. Seran pasados arbitrariamente a 0\n" )
     cat( "Si no te gusta la decision, modifica a gusto el programa!\n\n")
-    dataset[mapply(is.nan, dataset)] <- 0
+    dataset[mapply(is.nan, dataset)] <- NA
   }
 
   ReportarCampos( dataset )
