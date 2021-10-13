@@ -141,6 +141,7 @@ HemiModelos  <- function( hparam )
 
   modelo_final1  <- lightgbm( data= dgeneracion1,
                               param= hparam,
+                              save_name = paste0( "E", kexperimento, ".model" ),
                               verbose= -100 )
 
   rm( dgeneracion1 )  #borro y libero memoria
@@ -164,6 +165,7 @@ HemiModelos  <- function( hparam )
 
   modelo_final2  <- lightgbm( data= dgeneracion2,
                               param= hparam,
+                              save_name = paste0( "E", kexperimento, ".model" ),
                               verbose= -100
                             )
 
@@ -192,6 +194,7 @@ FullModelo  <- function( hparam )
 
   modelo_final  <- lightgbm( data= dgeneracion,
                              param= hparam,
+                             save_name = paste0( "E", kexperimento, ".model" ),
                              verbose= -100
                            )
 
