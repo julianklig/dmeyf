@@ -47,7 +47,7 @@ kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es pa
 kscript         <- "823_epic"
 
 # Este dataset se genero en el script 812_dataset_epic.r
-karch_dataset    <- "./datasets/dataset_epic_simple_v000.csv.gz"
+karch_dataset    <- "./datasets/dataset_epic_simple_v003.csv.gz"
 
 kapply_mes       <- c(202011)  #El mes donde debo aplicar el modelo
 
