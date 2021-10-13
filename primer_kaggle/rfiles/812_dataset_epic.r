@@ -23,20 +23,19 @@ setwd( directory.root )
 
 palancas  <- list()  #variable con las palancas para activar/desactivar
 
-palancas$version  <- "v000"   #Muy importante, ir cambiando la version
+palancas$version  <- "v003"   #Muy importante, ir cambiando la version
 
 # Aqui van las columnas que se quieren eliminar
-palancas$variablesdrift <- c()
-#palancas$variablesdrift <- c("internet",
-#                             "Visa_fultimo_cierre",
-#                             "Master_fultimo_cierre",
-#                             "cmobile_app_trx",
-#                             "tmobile_app"
-#                             )
+palancas$variablesdrift <- c("internet",
+                             "Visa_fultimo_cierre",
+                             "Master_fultimo_cierre",
+                             "cmobile_app_trx",
+                             "tmobile_app"
+                             )
 
-palancas$corregir <-  FALSE    # TRUE o FALSE
+palancas$corregir <-  TRUE    # TRUE o FALSE
 
-palancas$nuevasvars <-  FALSE  #si quiero hacer Feature Engineering manual
+palancas$nuevasvars <-  TRUE  #si quiero hacer Feature Engineering manual
 
 palancas$dummiesNA  <-  FALSE #Idea de Santiago Dellachiesa de UAustral
 
@@ -308,6 +307,37 @@ AgregarVariables  <- function( dataset )
   dataset[ , mdebitos_total         := mcuenta_debitos_automaticos + mttarjeta_visa_debitos_automaticos + mttarjeta_master_debitos_automaticos + mpagodeservicios + mpagomiscuentas ]
   dataset[ , mrdebitos_total        := mdebitos_total / mcuentas_saldo ]
 
+  # Variables random/raras/fumeta (combino variables con Gain > 0.01 en experimentos)
+  dataset[ , var_rara_1_ctrx        := mtarjeta_visa_consumo / ctrx_quarter ]
+  dataset[ , var_rara_2_ctrx        := mcuentas_saldo / ctrx_quarter ]
+  dataset[ , var_rara_3_ctrx        := mprestamos_personales / ctrx_quarter ]
+  dataset[ , var_rara_4_ctrx        := mcaja_ahorro / ctrx_quarter ]
+  dataset[ , var_rara_5_ctrx        := mactivos_margen / ctrx_quarter ]
+  dataset[ , var_rara_6_ctrx        := ctarjeta_visa_transacciones / ctrx_quarter ]
+  dataset[ , var_rara_7_ctrx        := mrentabilidad_annual / ctrx_quarter ]
+  dataset[ , var_rara_8_ctrx        := cproductos / ctrx_quarter ]
+
+  dataset[ , var_rara_1_ctrx_full   := ctrx_quarter / ctrx_full ]
+  dataset[ , var_rara_2_ctrx_full   := mingresos_total / ctrx_full ]
+  dataset[ , var_rara_3_ctrx_full   := mdeudas / ctrx_full ]
+  dataset[ , var_rara_4_ctrx_full   := cr_trx_payroll / ctrx_full ]
+  dataset[ , var_rara_5_ctrx_full   := mtarjeta_visa_consumo / ctrx_full ]
+  dataset[ , var_rara_6_ctrx_full   := mcaja_ahorro / ctrx_full ]
+  dataset[ , var_rara_7_ctrx_full   := mcuentas_saldo / ctrx_full ]
+  dataset[ , var_rara_8_ctrx_full   := mpayroll / ctrx_full ]
+  dataset[ , var_rara_9_ctrx_full   := ctarjeta_visa_transacciones / ctrx_full ]
+  dataset[ , var_rara_10_ctrx_full  := cpayroll_trx / ctrx_full ]
+
+  dataset[ , var_rara_1_mvisa_cons  := ctrx_quarter / mtarjeta_visa_consumo ]
+  dataset[ , var_rara_2_mvisa_cons  := cpayroll_trx / mtarjeta_visa_consumo ]
+  dataset[ , var_rara_3_mvisa_cons  := ctarjeta_debito_transacciones / mtarjeta_visa_consumo ]
+  dataset[ , var_rara_4_mvisa_cons  := mpayroll / mtarjeta_visa_consumo ]
+  dataset[ , var_rara_5_mvisa_cons  := mcuentas_saldo / mtarjeta_visa_consumo ]
+  dataset[ , var_rara_6_mvisa_cons  := mpasivos_margen / mtarjeta_visa_consumo ]
+  dataset[ , var_rara_7_mvisa_cons  := ccomisiones_mantenimiento / mtarjeta_visa_consumo ]
+  dataset[ , var_rara_8_mvisa_cons  := mprestamos_personales / mtarjeta_visa_consumo ]
+  dataset[ , var_rara_9_mvisa_cons  := mrentabilidad_annual / mtarjeta_visa_consumo ]
+  dataset[ , var_rara_10_mvisa_cons := ccomisiones_otras / mtarjeta_visa_consumo ]
 
   #valvula de seguridad para evitar valores infinitos
   #paso los infinitos a NULOS
@@ -327,8 +357,8 @@ AgregarVariables  <- function( dataset )
   nans_qty  <- sum( unlist( nans) )
   if( nans_qty > 0 )
   {
-    cat( "ATENCION, hay", nans_qty, "valores NaN 0/0 en tu dataset. Seran pasados arbitrariamente a 0\n" )
-    cat( "Si no te gusta la decision, modifica a gusto el programa!\n\n")
+    cat( "ATENCION, hay", nans_qty, "valores NaN 0/0 en tu dataset. Seran pasados arbitrariamente a NA\n" )
+    #cat( "Si no te gusta la decision, modifica a gusto el programa!\n\n")
     dataset[mapply(is.nan, dataset)] <- NA
   }
 
