@@ -47,7 +47,7 @@ kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es pa
 kscript         <- "823_epic"
 
 # Este dataset se genero en el script 812_dataset_epic.r
-karch_dataset    <- "./datasets/dataset_epic_simple_v003.csv.gz"
+karch_dataset    <- "./datasets/dataset_epic_simple_v000.csv.gz"
 
 kapply_mes       <- c(202011)  #El mes donde debo aplicar el modelo
 
@@ -62,12 +62,15 @@ kgen_mes_hasta    <- 202009  #Obviamente, solo puedo entrenar hasta 202011
 kgen_mes_desde    <- 202009
 
 
-kBO_iter    <-  150   #cantidad de iteraciones de la Optimizacion Bayesiana
+kBO_iter    <-  300   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 #Aqui se cargan los hiperparametros
 hs <- makeParamSet(
-         makeNumericParam("learning_rate",    lower=    0.02 , upper=    0.1),
-         makeNumericParam("feature_fraction", lower=    0.1  , upper=    1.0),
+         makeNumericParam("learning_rate",    lower=    0.02 , upper= 0.1),
+         makeNumericParam("feature_fraction", lower=    0.1  , upper= 1.0),
+         makeNumericParam("min_gain_to_split",lower=    0.0  , upper= 15.0),
+         makeNumericParam("lambda_l1",        lower=    0.0  , upper= 100.0),
+         makeNumericParam("lambda_l2",        lower=    0.0  , upper= 100.0),
          makeIntegerParam("min_data_in_leaf", lower=  100L   , upper= 8000L),
          makeIntegerParam("num_leaves",       lower=    8L   , upper= 1024L)
         )
@@ -297,9 +300,9 @@ EstimarGanancia_lightgbm  <- function( x )
                           verbosity= -100,
                           seed= 999983,
                           max_depth=  -1,         # -1 significa no limitar,  por ahora lo dejo fijo
-                          min_gain_to_split= 0.0, #por ahora, lo dejo fijo
-                          lambda_l1= 0.0,         #por ahora, lo dejo fijo
-                          lambda_l2= 0.0,         #por ahora, lo dejo fijo
+                          #min_gain_to_split= 0.0, #por ahora, lo dejo fijo
+                          #lambda_l1= 0.0,         #por ahora, lo dejo fijo
+                          #lambda_l2= 0.0,         #por ahora, lo dejo fijo
                           max_bin= 5,            #por ahora, lo dejo fijo
                           num_iterations= 450,   #un numero muy grande, lo limita early_stopping_rounds
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
