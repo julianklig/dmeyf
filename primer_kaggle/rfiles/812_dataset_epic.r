@@ -23,19 +23,20 @@ setwd( directory.root )
 
 palancas  <- list()  #variable con las palancas para activar/desactivar
 
-palancas$version  <- "v002"   #Muy importante, ir cambiando la version
+palancas$version  <- "v000"   #Muy importante, ir cambiando la version
 
 # Aqui van las columnas que se quieren eliminar
-palancas$variablesdrift <- c("internet",
-                             "Visa_fultimo_cierre",
-                             "Master_fultimo_cierre",
-                             "cmobile_app_trx",
-                             "tmobile_app"
-                             )
+palancas$variablesdrift <- c()
+#palancas$variablesdrift <- c("internet",
+#                             "Visa_fultimo_cierre",
+#                             "Master_fultimo_cierre",
+#                             "cmobile_app_trx",
+#                             "tmobile_app"
+#                             )
 
-palancas$corregir <-  TRUE    # TRUE o FALSE
+palancas$corregir <-  FALSE    # TRUE o FALSE
 
-palancas$nuevasvars <-  TRUE  #si quiero hacer Feature Engineering manual
+palancas$nuevasvars <-  FALSE  #si quiero hacer Feature Engineering manual
 
 palancas$dummiesNA  <-  FALSE #Idea de Santiago Dellachiesa de UAustral
 

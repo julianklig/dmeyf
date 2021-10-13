@@ -47,7 +47,7 @@ kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es pa
 kscript         <- "823_epic"
 
 # Este dataset se genero en el script 812_dataset_epic.r
-karch_dataset    <- "./datasets/dataset_epic_simple_v002.csv.gz"
+karch_dataset    <- "./datasets/dataset_epic_simple_v000.csv.gz"
 
 kapply_mes       <- c(202011)  #El mes donde debo aplicar el modelo
 
@@ -300,7 +300,7 @@ EstimarGanancia_lightgbm  <- function( x )
                           min_gain_to_split= 0.0, #por ahora, lo dejo fijo
                           lambda_l1= 0.0,         #por ahora, lo dejo fijo
                           lambda_l2= 0.0,         #por ahora, lo dejo fijo
-                          max_bin= 10,            #por ahora, lo dejo fijo
+                          max_bin= 7,            #por ahora, lo dejo fijo
                           num_iterations= 9999,   #un numero muy grande, lo limita early_stopping_rounds
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
                         )
