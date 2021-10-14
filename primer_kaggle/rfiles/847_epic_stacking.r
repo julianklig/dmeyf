@@ -46,7 +46,7 @@ kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es pa
 
 kscript         <- "847_epic_stacking"
 
-# Este dataset se genero en el script 812_dataset_epic.r
+# Este dataset se genero en el script 834_dataset_stacking.r
 karch_dataset    <- "./datasets/dataset_stacking_v001.csv.gz"
 
 kapply_mes       <- c(202011)  #El mes donde debo aplicar el modelo
@@ -62,7 +62,7 @@ kgen_mes_hasta    <- 202009  #Obviamente, solo puedo entrenar hasta 202011
 kgen_mes_desde    <- 202009
 
 
-kBO_iter    <-  150   #cantidad de iteraciones de la Optimizacion Bayesiana
+kBO_iter    <-  300   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 #Aqui se cargan los hiperparametros
 hs <- makeParamSet(
@@ -74,7 +74,7 @@ hs <- makeParamSet(
 
 campos_malos  <- c()   #aqui se deben cargar todos los campos culpables del Data Drifting
 
-ksemilla_azar  <- 102191  #Aqui poner la propia semilla
+ksemilla_azar  <- 524287  #Aqui poner la propia semilla
 #------------------------------------------------------------------------------
 #Funcion que lleva el registro de los experimentos
 
@@ -138,6 +138,7 @@ HemiModelos  <- function( hparam )
 
   modelo_final1  <- lightgbm( data= dgeneracion1,
                               param= hparam,
+                              save_name = paste0( "E", kexperimento, ".model" ),
                               verbose= -100 )
 
   rm( dgeneracion1 )  #borro y libero memoria
@@ -161,6 +162,7 @@ HemiModelos  <- function( hparam )
 
   modelo_final2  <- lightgbm( data= dgeneracion2,
                               param= hparam,
+                              save_name = paste0( "E", kexperimento, ".model" ),
                               verbose= -100
                             )
 
@@ -189,6 +191,7 @@ FullModelo  <- function( hparam )
 
   modelo_final  <- lightgbm( data= dgeneracion,
                              param= hparam,
+                             save_name = paste0( "E", kexperimento, ".model" ),
                              verbose= -100
                            )
 
@@ -300,7 +303,7 @@ EstimarGanancia_lightgbm  <- function( x )
                           min_gain_to_split= 0.0, #por ahora, lo dejo fijo
                           lambda_l1= 0.0,         #por ahora, lo dejo fijo
                           lambda_l2= 0.0,         #por ahora, lo dejo fijo
-                          max_bin= 31,            #por ahora, lo dejo fijo
+                          max_bin= 51,            #por ahora, lo dejo fijo
                           num_iterations= 9999,   #un numero muy grande, lo limita early_stopping_rounds
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
                         )
@@ -470,7 +473,7 @@ if(!file.exists(kbayesiana)) {
 
 
 #apagado de la maquina virtual, pero NO se borra
-#system( "sleep 10  &&  sudo shutdown -h now", wait=FALSE)
+system( "sleep 10  &&  sudo shutdown -h now", wait=FALSE)
 
 #suicidio,  elimina la maquina virtual directamente
 #system( "sleep 10  &&
