@@ -47,7 +47,7 @@ kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es pa
 kscript         <- "847_epic_stacking"
 
 # Este dataset se genero en el script 834_dataset_stacking.r
-karch_dataset    <- "./datasets/dataset_stacking_v001.csv.gz"
+karch_dataset    <- "./datasets/dataset_stacking_v002.csv.gz"
 
 kapply_mes       <- c(202011)  #El mes donde debo aplicar el modelo
 
@@ -62,7 +62,7 @@ kgen_mes_hasta    <- 202009  #Obviamente, solo puedo entrenar hasta 202011
 kgen_mes_desde    <- 202009
 
 
-kBO_iter    <-  300   #cantidad de iteraciones de la Optimizacion Bayesiana
+kBO_iter    <-  500   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 #Aqui se cargan los hiperparametros
 hs <- makeParamSet(
@@ -72,7 +72,8 @@ hs <- makeParamSet(
          makeNumericParam("lambda_l1",        lower=    0.0  , upper= 100.0),
          makeNumericParam("lambda_l2",        lower=    0.0  , upper= 100.0),
          makeIntegerParam("min_data_in_leaf", lower=  100L   , upper= 8000L),
-         makeIntegerParam("num_leaves",       lower=    8L   , upper= 1024L)
+         makeIntegerParam("num_leaves",       lower=    8L   , upper= 1024L),
+         makeIntegerParam("max_bin",          lower=    3L   , upper= 100L)
         )
 
 campos_malos  <- c()   #aqui se deben cargar todos los campos culpables del Data Drifting
@@ -293,6 +294,15 @@ EstimarGanancia_lightgbm  <- function( x )
 {
   GLOBAL_iteracion  <<- GLOBAL_iteracion + 1
 
+  #dejo los datos en el formato que necesita LightGBM
+  #uso el weight como un truco ESPANTOSO para saber la clase real
+  dtrain  <- lgb.Dataset( data=    data.matrix(  dataset[ entrenamiento==1 , campos_buenos, with=FALSE]),
+                          label=   dataset[ entrenamiento==1, clase01],
+                          weight=  dataset[ entrenamiento==1, ifelse(clase_ternaria=="CONTINUA", 1/ktrain_subsampling,
+                                                                     ifelse( clase_ternaria=="BAJA+2", 1, 1.0000001))] ,
+                          free_raw_data= TRUE
+                        )
+
   gc()
 
   param_basicos  <- list( objective= "binary",
@@ -432,15 +442,6 @@ dataset[    foto_mes>= ktrain_mes_desde  &
 #los campos que se van a utilizar
 campos_buenos  <- setdiff( colnames(dataset),
                            c("clase_ternaria","clase01", "generacion_final", "entrenamiento", "fold", campos_malos) )
-
-#dejo los datos en el formato que necesita LightGBM
-#uso el weight como un truco ESPANTOSO para saber la clase real
-dtrain  <- lgb.Dataset( data=    data.matrix(  dataset[ entrenamiento==1 , campos_buenos, with=FALSE]),
-                        label=   dataset[ entrenamiento==1, clase01],
-                        weight=  dataset[ entrenamiento==1, ifelse(clase_ternaria=="CONTINUA", 1/ktrain_subsampling,
-                                                                   ifelse( clase_ternaria=="BAJA+2", 1, 1.0000001))] ,
-                        free_raw_data= TRUE
-                      )
 
 
 #Aqui comienza la configuracion de la Bayesian Optimization

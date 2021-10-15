@@ -12,10 +12,14 @@ require("data.table")
 
 setwd("~/buckets/b1/" )
 
-version  <- "v001"  #cambiar cada vez, asi se tiene versionado del dataset
+version  <- "v002"  #cambiar cada vez, asi se tiene versionado del dataset
 
-dataset  <- fread( "./datasets/dataset_epic_simple_v001.csv.gz" )
-dataset  <- copy(  dataset[  , c("numero_de_cliente","foto_mes","clase_ternaria"),  with=FALSE] )
+dataset  <- fread( "./datasets/dataset_epic_simple_v003.csv.gz" )
+columnas_lindas  <- c("ctrx_quarter", "cpayroll_trx", "mtarjeta_visa_consumo", "mcaja_ahorro", # 1060_34
+                      "ctrx_full", "mingresos_total", "mdeudas", "cr_trx_payroll", # 1053_29
+                      "mpayroll", "mcuentas_saldo" # 1053_10
+                      )
+dataset  <- copy(  dataset[  , c("numero_de_cliente","foto_mes","clase_ternaria", columnas_lindas),  with=FALSE] )
 gc()
 
 
