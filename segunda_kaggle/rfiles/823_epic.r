@@ -51,15 +51,15 @@ karch_dataset    <- "./datasets/dataset_epic_full_v100.csv.gz"
 
 kapply_mes       <- c(202101)  #El mes donde debo aplicar el modelo
 
-ktrain_subsampling  <- 1.0   #el undersampling que voy a hacer de los continua
+ktrain_subsampling  <- 0.2   #el undersampling que voy a hacer de los continua
 
-ktrain_mes_hasta    <- 202012  #Obviamente, solo puedo entrenar hasta 202012
-ktrain_mes_desde    <- 201801
+ktrain_mes_hasta    <- 202011  #Obviamente, solo puedo entrenar hasta 202011
+ktrain_mes_desde    <- 202001
 
 ktrain_meses_malos  <- c()  #meses que quiero excluir del entrenamiento
 
-kgen_mes_hasta    <- 202012  #Obviamente, solo puedo entrenar hasta 202011
-kgen_mes_desde    <- 201801
+kgen_mes_hasta    <- 202011  #Obviamente, solo puedo entrenar hasta 202011
+kgen_mes_desde    <- 202001
 
 
 kBO_iter    <-  150   #cantidad de iteraciones de la Optimizacion Bayesiana
