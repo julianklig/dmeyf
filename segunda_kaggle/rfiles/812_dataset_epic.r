@@ -23,7 +23,7 @@ setwd( directory.root )
 
 palancas  <- list()  #variable con las palancas para activar/desactivar
 
-palancas$version  <- "v100"   #Muy importante, ir cambiando la version
+palancas$version  <- "v090"   #Muy importante, ir cambiando la version
 
 palancas$sample  <- 0.05   #Sampleo para tener con qué trabajar localmente
 # Columnas con las que estratificar para sampleo
@@ -32,14 +32,14 @@ palancas$stratifiedcolumns  <- c("clase_ternaria", "foto_mes")
 # Aqui van las columnas que se quieren eliminar
 palancas$variablesdrift <- c()
 
-palancas$corregir <-  FALSE    # TRUE o FALSE
+palancas$corregir <-  TRUE    # TRUE o FALSE
 
 palancas$nuevasvars <-  FALSE  #si quiero hacer Feature Engineering manual
 
 palancas$dummiesNA  <-  FALSE #Idea de Santiago Dellachiesa de UAustral
 
-palancas$lag1   <- FALSE    #lag de orden 1
-palancas$delta1 <- FALSE    # campo -  lag de orden 1
+palancas$lag1   <- TRUE    #lag de orden 1
+palancas$delta1 <- TRUE    # campo -  lag de orden 1
 palancas$lag2   <- FALSE
 palancas$delta2 <- FALSE
 palancas$lag3   <- FALSE
