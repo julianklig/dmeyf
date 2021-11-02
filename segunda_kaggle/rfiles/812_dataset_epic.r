@@ -25,6 +25,10 @@ palancas  <- list()  #variable con las palancas para activar/desactivar
 
 palancas$version  <- "v100"   #Muy importante, ir cambiando la version
 
+palancas$sample  <- 0.05   #Sampleo para tener con qué trabajar localmente
+# Columnas con las que estratificar para sampleo
+palancas$stratifiedcolumns  <- c("clase_ternaria", "foto_mes")
+
 # Aqui van las columnas que se quieren eliminar
 palancas$variablesdrift <- c()
 
@@ -100,6 +104,17 @@ DummiesNA  <- function( dataset )
              .SDcols= colsconNA]
 
   ReportarCampos( dataset )
+}
+#------------------------------------------------------------------------------
+# Particiona el dataset agrupado
+particionar  <- function( data,  division, agrupa="",  campo="fold", start=1, seed=NA )
+{
+  if( !is.na(seed) )   set.seed( seed )
+
+  bloque  <- unlist( mapply(  function(x,y) { rep( y, x )} ,   division,  seq( from=start, length.out=length(division) )  ) )
+
+  data[ ,  (campo) :=  sample( rep( bloque, ceiling(.N/length(bloque))) )[1:.N],
+            by= agrupa ]
 }
 #------------------------------------------------------------------------------
 #Corrige poniendo a NA las variables que en ese mes estan dañadas
@@ -681,6 +696,22 @@ correr_todo  <- function( palancas )
           logical01 = TRUE,
           sep= "," )
 
+  if (palancas$sample < 1.0) {
+      particionar(
+        dataset,
+        division = c(palancas$sample * 10000, (1 - palancas$sample) * 10000),
+        agrupa=palancas$stratifiedcolumns,
+        seed=86386
+      )
+      dataset_sample <- dataset[fold==1]
+
+      #Grabo el dataset sampleado
+      fwrite( dataset_sample,
+              paste0( "./datasets/dataset_epic_sample_", (palancas$sample * 100), "%_", palancas$version, ".csv.gz" ),
+              logical01 = TRUE,
+              sep= "," )
+
+  }
 }
 #------------------------------------------------------------------------------
 
