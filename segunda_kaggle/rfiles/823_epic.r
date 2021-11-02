@@ -54,13 +54,13 @@ kapply_mes       <- c(202011)  #El mes donde debo aplicar el modelo
 
 ktrain_subsampling  <- 0.1   #el undersampling que voy a hacer de los continua
 
-ktrain_mes_hasta    <- 202002  #Obviamente, solo puedo entrenar hasta 202011
-ktrain_mes_desde    <- 201907
+ktrain_mes_hasta    <- 202010  #Obviamente, solo puedo entrenar hasta 202011
+ktrain_mes_desde    <- 201901
 
 ktrain_meses_malos  <- c()  #meses que quiero excluir del entrenamiento
 
-kgen_mes_hasta    <- 202002  #Obviamente, solo puedo entrenar hasta 202011
-kgen_mes_desde    <- 201907
+kgen_mes_hasta    <- 202010  #Obviamente, solo puedo entrenar hasta 202011
+kgen_mes_desde    <- 201901
 
 
 kBO_iter    <-  150   #cantidad de iteraciones de la Optimizacion Bayesiana
