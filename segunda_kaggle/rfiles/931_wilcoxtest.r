@@ -9,7 +9,7 @@ setwd("~/buckets/b1/")
 corrida <- list()
 
 corrida$arch_testing1  <- "./work/E4006/E4006_981_covid_epic.txt"
-corrida$arch_testing2  <- "./work/E4008/E4008_982_pre_covid_epic.txt"
+corrida$arch_testing2  <- "./work/E4013/E4013_982_completo_covid_epic.txt"
 
 #leo los datasets
 resultados_testing1  <- fread( corrida$arch_testing1 )
