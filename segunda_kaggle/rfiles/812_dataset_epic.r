@@ -23,7 +23,7 @@ setwd( directory.root )
 
 palancas  <- list()  #variable con las palancas para activar/desactivar
 
-palancas$version  <- "v090"   #Muy importante, ir cambiando la version
+palancas$version  <- "v101"   #Muy importante, ir cambiando la version
 
 palancas$sample  <- 0.05   #Sampleo para tener con qué trabajar localmente
 # Columnas con las que estratificar para sampleo
@@ -34,7 +34,7 @@ palancas$variablesdrift <- c()
 
 palancas$corregir <-  TRUE    # TRUE o FALSE
 
-palancas$nuevasvars <-  FALSE  #si quiero hacer Feature Engineering manual
+palancas$nuevasvars <-  TRUE  #si quiero hacer Feature Engineering manual
 
 palancas$dummiesNA  <-  FALSE #Idea de Santiago Dellachiesa de UAustral
 
@@ -63,7 +63,7 @@ palancas$maximo6  <- FALSE
 palancas$tendencia6  <- FALSE    #Great power comes with great responsability
 
 
-palancas$canaritosimportancia  <- FALSE  #si me quedo solo con lo mas importante de canaritosimportancia
+palancas$canaritosimportancia  <- TRUE  #si me quedo solo con lo mas importante de canaritosimportancia
 
 
 #escribo para saber cuales fueron los parametros
