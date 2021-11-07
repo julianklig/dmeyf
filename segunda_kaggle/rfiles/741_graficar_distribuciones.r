@@ -32,9 +32,9 @@ for( campo in  campos_buenos )
   print(ggplot(tbl,
                aes(x=as.character(foto_mes), y=get(campo), fill=clase_ternaria)
                ) +
-        geom_boxplot(outlier.shape = NA) +
+        geom_boxplot() +
         scale_y_continuous(limits = quantile(tbl[,get(campo)],
-                                             c(0.1, 0.9),
+                                             c(0.05, 0.95),
                                              na.rm=TRUE)
         ) +
         ggtitle(paste0("Distribuciones - ", campo)) +
