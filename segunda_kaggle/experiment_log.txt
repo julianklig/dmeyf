@@ -1,0 +1,107 @@
+E5000:
+ - dataset: V100
+ - train: 201801 - 202012
+ - apply: 202101
+ - obs: borked
+
+E5002:
+ - dataset: V100
+ - train: 202001 - 202012
+ - apply: 202101
+ - obs: borked
+ 
+E4000:
+ - dataset: V90
+ - train: 202003 - 202010
+ - apply: 202011
+ - obs: no genera modelitos utiles (borked)
+
+E4001:
+ - dataset: V90
+ - train: 201907 - 202002
+ - apply: 202011
+ - obs: no genera modelitos utiles (borked)
+
+E4002:
+ - dataset: V90
+ - train: 201901 - 202010
+ - apply: 202011
+ - obs: no genera modelitos utiles (borked)
+
+E4006:
+ - dataset: V90
+ - apply: 202011
+ - obs: semillerío para wilcox sobre parametros de E4000
+
+E4008:
+ - dataset: V90
+ - apply: 202011
+ - obs: semillerío para wilcox sobre parametros de E4001
+ - conclusiones: despues de un text de wilcox es mejor E4000 para predecir
+
+E4009:
+ - dataset: V90
+ - apply: 202101
+ - train: 201901 - 202010
+ - obs: Generar modelitos de E4002
+
+E4010:
+ - dataset: V90
+ - apply: 202101
+ - train: 202003 - 202010
+ - obs: Generar modelitos de E4000
+
+E4011:
+ - dataset: V90
+ - apply: 202101
+ - train: 201907 - 202002
+ - obs: Generar modelitos de E4001
+
+E40013:
+ - dataset: V90
+ - apply: 202011
+ - obs: semillerío para wilcox sobre parametros de E4002
+ - conclusiones: despues de un text de wilcox es mejor E4002 para predecir
+
+E4015:
+ - dataset: V100 (stacking)
+ - apply: 202101
+ - train: stacking de modelitos hasta ahora
+
+E4016:
+ - dataset: V101
+ - apply: 202101
+ - train: 201810 - 202010
+ - obs: se agregan parámetros de regularización lambda y ajustes mínimos sobre learning rate (BO muy cerca del lower bound)
+
+E4017:
+ - dataset: V91
+ - apply: 202101
+ - train: 202003 - 202010
+ - obs: entrenar sobre meses de pandemia con regularización
+
+E4018:
+ - dataset: V92
+ - apply: 202101
+ - train: 202003 - 202010
+ - obs: dataset muy grande, tarda mucho en entrenar.
+
+E4019:
+ - dataset: V093
+ - apply: 202101
+ - train: 202003 - 202010
+ - obs: deltas de orden 3 sin orden 2.
+ 
+E4020:
+ - dataset: V93
+ - apply: 202011
+ - train: 202003 - 202010
+ - obs: semillerío para wilcox sobre parametros de E4019
+
+E4021:
+ - dataset: V91
+ - apply: 2021
+ - train: 202003 - 202010
+ - obs: semillerío para wilcox sobre parametros de E4017
+ 
+
