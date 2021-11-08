@@ -9,7 +9,7 @@ setwd("~/buckets/b1/")
 corrida <- list()
 
 corrida$arch_testing1  <- "./work/E4006/E4006_981_covid_epic.txt"
-corrida$arch_testing2  <- "./work/E4013/E4013_982_completo_covid_epic.txt"
+corrida$arch_testing2  <- "./work/E4020/E4020_984_covid_delta3_epic.txt"
 
 #leo los datasets
 resultados_testing1  <- fread( corrida$arch_testing1 )
@@ -23,8 +23,8 @@ resultados_testing2[   , ganancia  := ganancia/1e6 ]
 
 #Sobre el mismo experimento
 #Deberia dar que es lo mismo !
-wilcox.test(  resultados_testing1[ oficial==1, ganancia ][ 1:25],
-              resultados_testing1[ oficial==1, ganancia ][26:50] )
+#wilcox.test(  resultados_testing1[ oficial==1, ganancia ][ 1:25],
+#              resultados_testing1[ oficial==1, ganancia ][26:50] )
 
 
 #Sobre el experimento 1 y el experimento 2
