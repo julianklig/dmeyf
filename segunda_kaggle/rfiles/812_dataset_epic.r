@@ -23,7 +23,7 @@ setwd( directory.root )
 
 palancas  <- list()  #variable con las palancas para activar/desactivar
 
-palancas$version  <- "v101"   #Muy importante, ir cambiando la version
+palancas$version  <- "v093"   #Muy importante, ir cambiando la version
 
 palancas$sample  <- 0.05   #Sampleo para tener con qué trabajar localmente
 # Columnas con las que estratificar para sampleo
@@ -34,7 +34,7 @@ palancas$variablesdrift <- c()
 
 palancas$corregir <-  TRUE    # TRUE o FALSE
 
-palancas$nuevasvars <-  TRUE  #si quiero hacer Feature Engineering manual
+palancas$nuevasvars <-  FALSE  #si quiero hacer Feature Engineering manual
 
 palancas$dummiesNA  <-  FALSE #Idea de Santiago Dellachiesa de UAustral
 
@@ -42,8 +42,8 @@ palancas$lag1   <- TRUE    #lag de orden 1
 palancas$delta1 <- TRUE    # campo -  lag de orden 1
 palancas$lag2   <- FALSE
 palancas$delta2 <- FALSE
-palancas$lag3   <- FALSE
-palancas$delta3 <- FALSE
+palancas$lag3   <- TRUE
+palancas$delta3 <- TRUE
 palancas$lag4   <- FALSE
 palancas$delta4 <- FALSE
 palancas$lag5   <- FALSE
