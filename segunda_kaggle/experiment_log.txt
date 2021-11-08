@@ -9,7 +9,7 @@ E5002:
  - train: 202001 - 202012
  - apply: 202101
  - obs: borked
- 
+
 E4000:
  - dataset: V90
  - train: 202003 - 202010
@@ -91,7 +91,7 @@ E4019:
  - apply: 202101
  - train: 202003 - 202010
  - obs: deltas de orden 3 sin orden 2.
- 
+
 E4020:
  - dataset: V93
  - apply: 202011
@@ -103,5 +103,5 @@ E4021:
  - apply: 2021
  - train: 202003 - 202010
  - obs: semillerío para wilcox sobre parametros de E4017
- 
+
 
