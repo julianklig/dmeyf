@@ -45,7 +45,7 @@ kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es pa
 
 kscript         <- "961_epic"
 
-karch_dataset    <- "./datasets/dataset_epici_full_v095.csv.gz"
+karch_dataset    <- "./datasets/dataset_epic_full_v095.csv.gz"
 
 kapply_mes       <- c(202101)  #El mes donde debo aplicar el modelo
 
@@ -344,7 +344,7 @@ EstimarGanancia_lightgbm  <- function( x )
   {
     GLOBAL_ganancia_max  <<- ganancia  #asigno la nueva maxima ganancia a una variable GLOBAL, por eso el <<-
 
-    if( GLOBAL_iteracion > 30 )
+    if( GLOBAL_iteracion > 10 )
     {
       FullModelo( param_final )
       HemiModelos( param_final )
