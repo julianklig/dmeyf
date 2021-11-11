@@ -110,3 +110,8 @@ E4023:
  - train: 202003 - 202010
  - obs: agregadas tendencias con delta1
 
+E4024:
+ - dataset: V96
+ - apply: 2021
+ - train: 202003 - 202010
+ - obs: agregadas tendencias con delta1 y delta3
