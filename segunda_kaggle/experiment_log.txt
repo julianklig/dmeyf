@@ -102,6 +102,11 @@ E4021:
  - dataset: V91
  - apply: 2021
  - train: 202003 - 202010
- - obs: semillerío para wilcox sobre parametros de E4017
+ - obs: semillerío para wilcox sobre parametros de E4017 (da mejor delta3 que delta2 y mejor que sin esos)
 
+E4023:
+ - dataset: V95
+ - apply: 2021
+ - train: 202003 - 202010
+ - obs: agregadas tendencias con delta1
 
