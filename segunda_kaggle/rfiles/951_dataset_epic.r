@@ -22,7 +22,7 @@ setwd( directory.root )
 
 palancas  <- list()  #variable con las palancas para activar/desactivar
 
-palancas$version  <- "v096"   #Muy importante, ir cambiando la version
+palancas$version  <- "v097"   #Muy importante, ir cambiando la version
 
 palancas$sample  <- 0.05   #Sampleo para tener con qué trabajar localmente
 # Columnas con las que estratificar para sampleo
@@ -32,7 +32,7 @@ palancas$variablesdrift  <- c()   #aqui van las columnas que se quieren eliminar
 
 palancas$corregir <-  TRUE    # TRUE o FALSE
 
-palancas$nuevasvars <-  FALSE  #si quiero hacer Feature Engineering manual
+palancas$nuevasvars <-  TRUE  #si quiero hacer Feature Engineering manual
 
 palancas$dummiesNA  <-  FALSE #La idea de Santiago Dellachiesa
 
