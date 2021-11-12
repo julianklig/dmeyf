@@ -120,5 +120,10 @@ E4025:
  - dataset: V97
  - apply: 2021
  - train: 202003 - 202010
- - obs: tendencias, delta1 y delta3 son feature engineering de la kaggle anterior
+ - obs: tendencias, delta1 y delta3 con feature engineering de la kaggle anterior
 
+E4026:
+ - dataset: V94
+ - apply: 2021
+ - train: 202003 - 202010
+ - obs: deltas de orden 6 y 1.
