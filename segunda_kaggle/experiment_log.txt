@@ -145,3 +145,9 @@ E4029:
  - apply: 202011
  - train: 202003 - 202010
  - obs: semillerio sobre el E4024
+
+E4030:
+ - dataset: V97
+ - apply: 202011
+ - train: 202003 - 202010
+ - obs: semillerio sobre el E4025
