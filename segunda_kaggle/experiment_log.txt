@@ -127,3 +127,9 @@ E4026:
  - apply: 2021
  - train: 202003 - 202010
  - obs: deltas de orden 6 y 1.
+
+E4027:
+ - dataset: V94
+ - apply: 202011
+ - train: 202003 - 202010
+ - obs: semillerio sobre el E4026
