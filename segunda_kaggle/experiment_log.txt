@@ -133,21 +133,25 @@ E4027:
  - apply: 202011
  - train: 202003 - 202010
  - obs: semillerio sobre el E4026
+ - res: comparado contra delta3 da mejor con delta6
 
 E4028:
  - dataset: V95
  - apply: 202011
  - train: 202003 - 202010
  - obs: semillerio sobre el E4023
+ - res: comparado contra delta6 da mejor con tendencias
 
 E4029:
  - dataset: V96
  - apply: 202011
  - train: 202003 - 202010
  - obs: semillerio sobre el E4024
+ - res: comparado contra tendencias + delta1 da mejor con tendencias + delta3
 
 E4030:
  - dataset: V97
  - apply: 202011
  - train: 202003 - 202010
  - obs: semillerio sobre el E4025
+ - res: comparado contra tendencias + delta3 da peor con tendencias + delta1 + delta3
