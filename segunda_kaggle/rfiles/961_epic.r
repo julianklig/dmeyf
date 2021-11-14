@@ -45,7 +45,7 @@ kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es pa
 
 kscript         <- "961_epic"
 
-karch_dataset    <- "./datasets/dataset_epic_full_v097.csv.gz"
+karch_dataset    <- "./datasets/canaproxy_vidapropia_V110.csv.gz"
 
 kapply_mes       <- c(202101)  #El mes donde debo aplicar el modelo
 
@@ -55,12 +55,12 @@ ktest_mes_desde  <- 202011
 ktrain_subsampling  <- 0.1   #el undersampling que voy a hacer de los continua
 
 ktrain_mes_hasta    <- 202010  #Obviamente, solo puedo entrenar hasta 202011
-ktrain_mes_desde    <- 202003
+ktrain_mes_desde    <- 201910
 ktrain_meses_malos  <- c( 202006 )  #meses que quiero excluir del entrenamiento
 
 
 kgen_mes_hasta    <- 202011   #La generacion final para Kaggle, sin undersampling
-kgen_mes_desde    <- 202003
+kgen_mes_desde    <- 201910
 
 
 kBO_iter    <-  200   #cantidad de iteraciones de la Optimizacion Bayesiana
