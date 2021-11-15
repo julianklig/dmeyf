@@ -155,3 +155,9 @@ E4030:
  - train: 202003 - 202010
  - obs: semillerio sobre el E4025
  - res: comparado contra tendencias + delta3 da peor con tendencias + delta1 + delta3
+
+E4031:
+ - dataset: V110
+ - apply: 2021
+ - train: 201910 - 202010
+ - obs: probando el esquema de cruces de variables con canaritos.
