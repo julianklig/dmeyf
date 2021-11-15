@@ -66,7 +66,7 @@ kBO_iter    <-  300   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 #Aqui se cargan los hiperparametros
 hs <- makeParamSet(
-         makeNumericParam("learning_rate",    lower=    0.12 , upper=    0.1),
+         makeNumericParam("learning_rate",    lower=    0.01 , upper=    0.1),
          makeNumericParam("feature_fraction", lower=    0.05 , upper=    1.0),
          #makeNumericParam("min_gain_to_split",lower=    0.0  , upper= 15.0),
          makeNumericParam("lambda_l1",        lower=    0.0  , upper= 100.0),
