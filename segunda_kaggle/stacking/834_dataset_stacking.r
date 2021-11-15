@@ -12,7 +12,7 @@ require("data.table")
 
 setwd("~/buckets/b1/" )
 
-version  <- "v100"  #cambiar cada vez, asi se tiene versionado del dataset
+version  <- "v110"  #cambiar cada vez, asi se tiene versionado del dataset
 
 dataset  <- fread( "./datasets/dataset_epic_full_v100.csv.gz" )
 columnas_lindas  <- c()
