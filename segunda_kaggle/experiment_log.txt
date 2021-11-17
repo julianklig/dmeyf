@@ -161,3 +161,9 @@ E4031:
  - apply: 2021
  - train: 201910 - 202010
  - obs: probando el esquema de cruces de variables con canaritos.
+
+E4032:
+ - dataset: V110 (stacking)
+ - apply: 2021
+ - train: 201910 - 202011
+ - obs: Stacking de lo que hay hasta ahora
