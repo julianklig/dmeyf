@@ -51,7 +51,7 @@ karch_dataset    <- "./datasets/dataset_stacking_v110.csv.gz"
 
 kapply_mes       <- c(202101)  #El mes donde debo aplicar el modelo
 
-ktrain_subsampling  <- 1.0   #el undersampling que voy a hacer de los continua
+ktrain_subsampling  <- 0.1   #el undersampling que voy a hacer de los continua
 
 ktrain_mes_hasta    <- 202011  #Obviamente, solo puedo entrenar hasta 202011
 ktrain_mes_desde    <- 201910
