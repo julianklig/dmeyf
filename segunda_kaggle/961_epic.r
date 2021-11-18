@@ -50,17 +50,17 @@ karch_dataset    <- "./datasets/dataset_epic_full_v121.csv.gz"
 kapply_mes       <- c(202101)  #El mes donde debo aplicar el modelo
 
 ktest_mes_hasta  <- 202011  #Esto es lo que uso para testing
-ktest_mes_desde  <- 202011
+ktest_mes_desde  <- 202010
 
 ktrain_subsampling  <- 0.1   #el undersampling que voy a hacer de los continua
 
-ktrain_mes_hasta    <- 202010  #Obviamente, solo puedo entrenar hasta 202011
-ktrain_mes_desde    <- 202003
+ktrain_mes_hasta    <- 202009  #Obviamente, solo puedo entrenar hasta 202011
+ktrain_mes_desde    <- 201909
 ktrain_meses_malos  <- c( 202006 )  #meses que quiero excluir del entrenamiento
 
 
 kgen_mes_hasta    <- 202011   #La generacion final para Kaggle, sin undersampling
-kgen_mes_desde    <- 202003
+kgen_mes_desde    <- 201909
 
 
 kBO_iter    <-  250   #cantidad de iteraciones de la Optimizacion Bayesiana
@@ -406,8 +406,8 @@ for( i  in 1:(ncol(dataset)/5))  dataset[ , paste0("canarito", i ) :=  runif( nr
 dapply  <- copy( dataset[  foto_mes %in% kapply_mes ] )
 
 
-#creo la clase_binaria2   0={BAJA+1}  1={CONTINUA, BAJA+2}
-dataset[ , clase01:= ifelse( clase_ternaria=="BAJA+1", 0, 1 ) ]
+#creo la clase_binaria2   1={BAJA+1, BAJA+2}  0={CONTINUA}
+dataset[ , clase01:= ifelse( clase_ternaria=="CONTINUA", 0, 1 ) ]
 
 
 particionar( dataset, division= c(1,1), agrupa= c("foto_mes","clase_ternaria" ), seed= ksemilla_azar )
