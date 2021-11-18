@@ -751,7 +751,7 @@ correr_todo  <- function( palancas )
         seed=86386
       )
       dataset_sample <- dataset[fold==1]
-      dataset_sample[,fold := NULL]
+      #dataset_sample[,fold := NULL]
 
       #Grabo el dataset sampleado
       fwrite( dataset_sample,
