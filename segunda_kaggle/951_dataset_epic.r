@@ -36,6 +36,8 @@ palancas$nuevasvars <-  TRUE  #si quiero hacer Feature Engineering manual
 
 palancas$dummiesNA  <-  FALSE #La idea de Santiago Dellachiesa
 
+palancas$ranks  <-  FALSE #La idea de Santiago Dellachiesa
+
 palancas$lag1   <- TRUE    #lag de orden 1
 palancas$delta1 <- TRUE    # campo -  lag de orden 1
 palancas$lag2   <- FALSE
@@ -377,6 +379,22 @@ AgregarVariables  <- function( dataset )
 
   ReportarCampos( dataset )
 }
+
+#-----------------------------------------------------------------------------
+# Rankea las columnas del dataset por <foto_mes>. Tomado inescrupulosamente de
+# una sugerencia de Zulip
+Ranks <- function( dataset, cols )
+{
+    dataset[ , paste0( cols, "_rango") := lapply(.SD,
+                                                 frankv,
+                                                 na.last="keep",
+                                                 ties.method="dense"),
+            by= foto_mes, .SDcols= cols ]
+
+    ReportarCampos( dataset )
+}
+
+
 #------------------------------------------------------------------------------
 #esta funcion supone que dataset esta ordenado por   <numero_de_cliente, foto_mes>
 #calcula el lag y el delta lag
@@ -685,6 +703,8 @@ correr_todo  <- function( palancas )
   if( palancas$nuevasvars )  AgregarVariables( dataset )
 
   cols_analiticas  <- setdiff( colnames(dataset),  c("numero_de_cliente","foto_mes","mes","clase_ternaria") )
+
+  if( palancas$ranks )  Ranks( dataset, cols_analiticas )
 
   if( palancas$lag1 )   Lags( dataset, cols_analiticas, 1, palancas$delta1 )
   if( palancas$lag2 )   Lags( dataset, cols_analiticas, 2, palancas$delta2 )
