@@ -45,7 +45,7 @@ kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es pa
 
 kscript         <- "961_epic"
 
-karch_dataset    <- "./datasets/dataset_epic_full_v096.csv.gz"
+karch_dataset    <- "./datasets/dataset_epic_full_v121.csv.gz"
 
 kapply_mes       <- c(202101)  #El mes donde debo aplicar el modelo
 
@@ -63,7 +63,7 @@ kgen_mes_hasta    <- 202011   #La generacion final para Kaggle, sin undersamplin
 kgen_mes_desde    <- 202003
 
 
-kBO_iter    <-  200   #cantidad de iteraciones de la Optimizacion Bayesiana
+kBO_iter    <-  250   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 #Aqui se cargan los hiperparametros
 hs <- makeParamSet(
@@ -344,7 +344,7 @@ EstimarGanancia_lightgbm  <- function( x )
   {
     GLOBAL_ganancia_max  <<- ganancia  #asigno la nueva maxima ganancia a una variable GLOBAL, por eso el <<-
 
-    if( GLOBAL_iteracion > 20 )
+    if( GLOBAL_iteracion > 30 )
     {
       FullModelo( param_final )
       HemiModelos( param_final )
@@ -493,14 +493,14 @@ if(!file.exists(kbayesiana)) {
 
 
 #apagado de la maquina virtual, pero NO se borra
-system( "sleep 10  &&  sudo shutdown -h now", wait=FALSE)
+#system( "sleep 10  &&  sudo shutdown -h now", wait=FALSE)
 
 #suicidio,  elimina la maquina virtual directamente
-#system( "sleep 10  &&
-#        export NAME=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/name -H 'Metadata-Flavor: Google') &&
-#        export ZONE=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/zone -H 'Metadata-Flavor: Google') &&
-#        gcloud --quiet compute instances delete $NAME --zone=$ZONE",
-#        wait=FALSE )
+system( "sleep 10  &&
+        export NAME=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/name -H 'Metadata-Flavor: Google') &&
+        export ZONE=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/zone -H 'Metadata-Flavor: Google') &&
+        gcloud --quiet compute instances delete $NAME --zone=$ZONE",
+        wait=FALSE )
 
 
 quit( save="no" )
