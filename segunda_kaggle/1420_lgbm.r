@@ -321,6 +321,9 @@ EstimarGanancia_lightgbm  <- function( x )
 
 if( is.na(kexperimento ) )   kexperimento <- get_experimento()  #creo el experimento
 
+# Forma fea de mostrar el experimento al que voy
+cat(kexperimento)
+
 #en estos archivos quedan los resultados
 dir.create( paste0( "./work/E",  kexperimento, "/" ) )     #creo carpeta del experimento dentro de work
 
