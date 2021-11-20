@@ -188,8 +188,8 @@ EstimarGanancia_lightgbm  <- function( x )
                           verbosity= -100,
                           max_depth=  -1,         # -1 significa no limitar,  por ahora lo dejo fijo
                           min_gain_to_split= 0.0, #por ahora, lo dejo fijo
-                          lambda_l1= 0.0,         #por ahora, lo dejo fijo
-                          lambda_l2= 0.0,         #por ahora, lo dejo fijo
+                          #lambda_l1= 0.0,         #por ahora, lo dejo fijo
+                          #lambda_l2= 0.0,         #por ahora, lo dejo fijo
                           max_bin= 31,            #MAX BIN extremo, para  German y Daiana
                           num_iterations= 9999,   #un numero muy grande, lo limita early_stopping_rounds
                           early_stopping_rounds= 200,

@@ -10,18 +10,20 @@ require("primes")
 setwd("~/buckets/b1/")
 
 karch_dataset  <- "./datasets/semillerio_dataset_lag1.csv.gz"
-ksalida  <- "semillerio" 
+ksalida  <- "semillerio"
 
 kcantidad_semillas  <- 200
 
 #ATENCION
 #aqui deben ir los mejores valores que salieron de la optimizacion bayesiana
 x  <- list()
-x$gleaf_size   <-  
-x$gnum_leaves  <-  
-x$learning_rate <-  
-x$feature_fraction <-  
-x$num_iterations  <- 
+x$gleaf_size   <- 74.5904109977
+x$gnum_leaves  <- 0.14207305447
+x$lambda_l1 <- 90.456272482
+x$lambda_l2 <- 26.1273473103
+x$learning_rate <- 0.0517390608233
+x$feature_fraction <- 0.813877164145
+x$num_iterations  <- 246
 
 #------------------------------------------------------------------------------
 
@@ -29,7 +31,7 @@ particionar  <- function( data,  division, agrupa="",  campo="fold", start=1, se
 {
   if( !is.na(seed) )   set.seed( seed )
 
-  bloque  <- unlist( mapply(  function(x,y) { rep( y, x )} ,   division,  seq( from=start, length.out=length(division) )  ) )  
+  bloque  <- unlist( mapply(  function(x,y) { rep( y, x )} ,   division,  seq( from=start, length.out=length(division) )  ) )
 
   data[ ,  (campo) :=  sample( rep( bloque, ceiling(.N/length(bloque))) )[1:.N],
             by= agrupa ]
@@ -92,8 +94,8 @@ param_buenos  <- list( objective= "binary",
                        max_depth=  -1,
                        max_bin= 31,
                        min_gain_to_split= 0.0,
-                       lambda_l1= 0.0,
-                       lambda_l2= 0.0, 
+                       lambda_l1= x$lambda_l1,
+                       lambda_l2= x$lambda_l2,
                        num_iterations= x$num_iterations,
                        learning_rate=  x$learning_rate,
                        feature_fraction= x$feature_fraction,
@@ -122,7 +124,7 @@ for( semilla in  ksemillas)
                         param= param_buenos )
 
   #aplico el modelo a los datos nuevos
-  prediccion  <- frank(  predict( modelo, 
+  prediccion  <- frank(  predict( modelo,
                                   data.matrix( dfuturo[ , campos_buenos, with=FALSE ]) ) )
 
   tb_predicciones[  , predicciones_acumuladas :=  predicciones_acumuladas +  prediccion ]  #acumulo las predicciones
@@ -144,8 +146,8 @@ for( semilla in  ksemillas)
       entrega[ 1:corte,  Predicted := 1L ]  #me quedo con los primeros
 
       #genero el archivo para Kaggle
-      fwrite( entrega[ , c("numero_de_cliente","Predicted"), with=FALSE], 
-              file=  paste0( "./kaggle/" , ksalida, "_", isemilla,"_",corte, ".csv" ),  
+      fwrite( entrega[ , c("numero_de_cliente","Predicted"), with=FALSE],
+              file=  paste0( "./kaggle/" , ksalida, "_", isemilla,"_",corte, ".csv" ),
               sep= "," )
     }
   }
