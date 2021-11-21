@@ -9,7 +9,7 @@ require("primes")
 
 setwd("~/buckets/b1/")
 
-karch_dataset  <- "./datasets/semillerio_dataset_lag1.csv.gz"
+karch_dataset   <-  "./datasets/dataset_epic_full_v096.csv.gz"
 ksalida  <- "semillerio"
 
 kcantidad_semillas  <- 200
@@ -17,13 +17,13 @@ kcantidad_semillas  <- 200
 #ATENCION
 #aqui deben ir los mejores valores que salieron de la optimizacion bayesiana
 x  <- list()
-x$gleaf_size   <- 74.5904109977
-x$gnum_leaves  <- 0.14207305447
-x$lambda_l1 <- 90.456272482
-x$lambda_l2 <- 26.1273473103
-x$learning_rate <- 0.0517390608233
-x$feature_fraction <- 0.813877164145
-x$num_iterations  <- 246
+x$gleaf_size   <- 48.2971
+x$gnum_leaves  <- 0.2061233
+x$lambda_l1 <- 1.844982
+x$lambda_l2 <- 21.40832
+x$learning_rate <- 0.06556894
+x$feature_fraction <- 0.727194
+x$num_iterations  <- 614
 
 #------------------------------------------------------------------------------
 
@@ -155,3 +155,16 @@ for( semilla in  ksemillas)
 
 }
 
+#-------------------------------------------------------
+#apagado de la maquina virtual, pero NO se borra
+#system( "sleep 10  &&  sudo shutdown -h now", wait=FALSE)
+
+#suicidio,  elimina la maquina virtual directamente
+system( "sleep 20  &&
+        export NAME=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/name -H 'Metadata-Flavor: Google') &&
+        export ZONE=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/zone -H 'Metadata-Flavor: Google') &&
+        gcloud --quiet compute instances delete $NAME --zone=$ZONE",
+        wait=FALSE )
+
+
+quit( save="no" )
