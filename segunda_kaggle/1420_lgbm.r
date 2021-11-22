@@ -53,14 +53,14 @@ kexperimento  <- NA  #NA si se corre la primera vez, un valor concreto si es par
 
 kscript       <- "1420_lgbm"
 
-karchivo_dataset   <-  "./datasets/dataset_epic_full_v096.csv.gz"
+karchivo_dataset   <-  "./datasets/dataset_epic_full_v121.csv.gz"
 
 kfecha_cutoff  <- 202001
 ktrain_desde   <- 202001
 ktrain_hasta   <- 202009
 
 
-kBO_iter    <-  120   #cantidad de iteraciones de la Optimizacion Bayesiana
+kBO_iter    <-  150   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 kcantidad_semillas  <- 10
 
