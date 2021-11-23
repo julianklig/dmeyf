@@ -3,28 +3,54 @@ rm( list=ls() )  #remove all objects
 gc()             #garbage collection
 
 require("data.table")
-require("lightgbm")
+require("rlist")
+require("yaml")
+
 require("primes")
+
+require("lightgbm")
 
 
 setwd("~/buckets/b1/")
 
-karch_dataset   <-  "./datasets/dataset_epic_full_v096.csv.gz"
+karch_dataset   <-  "./datasets/dataset_epic_full_v121.csv.gz"
 ksalida  <- "semillerio"
+
+kexperimento  <- NA
+kscript         <- "s1431"
+
 
 kcantidad_semillas  <- 200
 
 #ATENCION
 #aqui deben ir los mejores valores que salieron de la optimizacion bayesiana
 x  <- list()
-x$gleaf_size   <- 48.2971
-x$gnum_leaves  <- 0.2061233
-x$lambda_l1 <- 1.844982
-x$lambda_l2 <- 21.40832
-x$learning_rate <- 0.06556894
-x$feature_fraction <- 0.727194
-x$num_iterations  <- 614
+x$gleaf_size   <-
+x$gnum_leaves  <-
+x$learning_rate <-
+x$feature_fraction <-
+x$max_bin  <-
+x$num_iterations  <-
+x$pos_ratio  <-
 
+
+#------------------------------------------------------------------------------
+#Funcion que lleva el registro de los experimentos
+
+get_experimento  <- function()
+{
+  if( !file.exists( "./maestro.yaml" ) )  cat( file="./maestro.yaml", "experimento: 1000" )
+
+  exp  <- read_yaml( "./maestro.yaml" )
+  experimento_actual  <- exp$experimento
+
+  exp$experimento  <- as.integer(exp$experimento + 1)
+  Sys.chmod( "./maestro.yaml", mode = "0644", use_umask = TRUE)
+  write_yaml( exp, "./maestro.yaml" )
+  Sys.chmod( "./maestro.yaml", mode = "0444", use_umask = TRUE) #dejo el archivo readonly
+
+  return( experimento_actual )
+}
 #------------------------------------------------------------------------------
 
 particionar  <- function( data,  division, agrupa="",  campo="fold", start=1, seed=NA )
@@ -41,8 +67,18 @@ particionar  <- function( data,  division, agrupa="",  campo="fold", start=1, se
 
 setwd("~/buckets/b1/")
 
-set.seed( 102191 )   #dejo fija esta semilla
+if( is.na(kexperimento ) )   kexperimento <- get_experimento()  #creo el experimento
 
+#en estos archivos quedan los resultados
+dir.create( paste0( "./work/E",  kexperimento, "/" ) )     #creo carpeta del experimento dentro de work
+dir.create( paste0( "./kaggle/E",  kexperimento, "/" ) )   #creo carpeta del experimento dentro de kaggle
+dir.create( paste0( "./kaggle/E",  kexperimento, "/meseta/" ) )   #creo carpeta del experimento dentro de kaggle
+
+kkaggle       <- paste0("./kaggle/E",kexperimento, "/E",  kexperimento, "_", kscript, "_" )
+kkagglemeseta <- paste0("./kaggle/E",kexperimento, "/meseta/E",  kexperimento, "_", kscript, "_" )
+
+
+set.seed( 102191 )   #dejo fija esta semilla
 #me genero un vector de semilla buscando numeros primos al azar
 primos  <- generate_primes(min=100000, max=1000000)  #genero TODOS los numeros primos entre 100k y 1M
 ksemillas  <- sample(primos)[ 1:kcantidad_semillas ]   #me quedo con CANTIDAD_SEMILLAS primos al azar
@@ -92,10 +128,10 @@ param_buenos  <- list( objective= "binary",
                        verbosity= -100,
                        seed= 484201,
                        max_depth=  -1,
-                       max_bin= 31,
+                       max_bin= x$max_bin,
                        min_gain_to_split= 0.0,
-                       lambda_l1= x$lambda_l1,
-                       lambda_l2= x$lambda_l2,
+                       lambda_l1= 0.0,
+                       lambda_l2= 0.0,
                        num_iterations= x$num_iterations,
                        learning_rate=  x$learning_rate,
                        feature_fraction= x$feature_fraction,
@@ -131,7 +167,7 @@ for( semilla in  ksemillas)
   tb_predicciones[  , paste0( "pred_", isemilla ) :=  prediccion ]  #guardo el resultado de esta prediccion
 
 
-  if(  isemilla %% 5 == 0 )  #imprimo cada 5 semillas
+  if(  isemilla %% 10 == 0 )  #imprimo cada 10 semillas
   {
     #Genero la entrega para Kaggle
     entrega  <- as.data.table( list( "numero_de_cliente"= dfuturo[  , numero_de_cliente],
@@ -139,15 +175,26 @@ for( semilla in  ksemillas)
 
     setorder( entrega, -prob )
 
+    #genero la salida oficial, sin mesetas
+    entrega[ ,  Predicted := 0L ]
+    cantidad_estimulos  <-  as.integer( nrow(dfuturo)*x$pos_ratio )
+    entrega[ 1:cantidad_estimulos,  Predicted := 1L ]  #me quedo con los primeros
 
-    for(  corte  in seq( 10000, 15000, 1000) ) #imprimo cortes en 10000, 11000, 12000, 13000, 14000 y 15000
+    #genero el archivo para Kaggle
+    fwrite( entrega[ , c("numero_de_cliente","Predicted"), with=FALSE],
+            file=  paste0(  kkaggle, isemilla, ".csv" ),
+            sep= "," )
+
+
+
+    for(  corte  in seq( 11000, 14000, 1000) ) #imprimo cortes en 10000, 11000, 12000, 13000, 14000 y 15000
     {
       entrega[ ,  Predicted := 0L ]
       entrega[ 1:corte,  Predicted := 1L ]  #me quedo con los primeros
 
       #genero el archivo para Kaggle
       fwrite( entrega[ , c("numero_de_cliente","Predicted"), with=FALSE],
-              file=  paste0( "./kaggle/" , ksalida, "_", isemilla,"_",corte, ".csv" ),
+              file=  paste0(  kkagglemeseta, isemilla, "_",corte, ".csv" ),
               sep= "," )
     }
   }
@@ -155,16 +202,3 @@ for( semilla in  ksemillas)
 
 }
 
-#-------------------------------------------------------
-#apagado de la maquina virtual, pero NO se borra
-#system( "sleep 10  &&  sudo shutdown -h now", wait=FALSE)
-
-#suicidio,  elimina la maquina virtual directamente
-system( "sleep 20  &&
-        export NAME=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/name -H 'Metadata-Flavor: Google') &&
-        export ZONE=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/zone -H 'Metadata-Flavor: Google') &&
-        gcloud --quiet compute instances delete $NAME --zone=$ZONE",
-        wait=FALSE )
-
-
-quit( save="no" )

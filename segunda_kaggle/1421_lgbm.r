@@ -1,5 +1,8 @@
+#Incorpora el  max_bin  a la Bayesian Optimization
+#Atencion,  si se quiere un max_bin mayor a 255, se debe DUPLICAR la cantidad de memoria RAM
+
 #Este script necesita
-# 32 GB de memoria RAM
+# 64 GB de memoria RAM
 # 256 GB de espacio en disco
 # 8 vCPU
 # demora 22 horas en correr
@@ -49,9 +52,9 @@ switch ( Sys.info()[['sysname']],
 setwd( directory.root )
 
 
-kexperimento  <- NA  #NA si se corre la primera vez, un valor concreto si es para continuar procesando
+kexperimento  <- NA #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
-kscript       <- "1420_lgbm"
+kscript       <- "1421_lgbm"
 
 karchivo_dataset   <-  "./datasets/dataset_epic_full_v121.csv.gz"
 
@@ -68,12 +71,13 @@ kcantidad_semillas  <- 10
 #Aqui se cargan los hiperparametros
 #ATENCION  se juega con  gleaf_size y gnum_leaves
 hs <- makeParamSet(
-         makeNumericParam("learning_rate",    lower=    0.02 , upper=    0.2),
-         makeNumericParam("feature_fraction", lower=    0.1  , upper=    1.0),
+         makeIntegerParam("max_bin",          lower=   4      , upper=  255),
+         makeNumericParam("learning_rate",    lower=   0.02   , upper=    0.2),
+         makeNumericParam("feature_fraction", lower=   0.1    , upper=    1.0),
          makeNumericParam("lambda_l1",        lower=    0.0  , upper=  100.0),
          makeNumericParam("lambda_l2",        lower=    0.0  , upper=  200.0),
-         makeNumericParam("gleaf_size",       lower=   10.0  , upper=  100.0),
-         makeNumericParam("gnum_leaves",      lower=   0.01  , upper=    1.0)
+         makeNumericParam("gleaf_size",       lower=  20.0    , upper=  100.0),
+         makeNumericParam("gnum_leaves",      lower=   0.01   , upper=    1.0)
         )
 
 
@@ -180,6 +184,21 @@ EstimarGanancia_lightgbm  <- function( x )
   gc()
   GLOBAL_iteracion  <<- GLOBAL_iteracion + 1
 
+  #validacion es una mitad de 202011
+  dvalid  <- lgb.Dataset( data=    data.matrix(  dapply[ fold==1, campos_buenos, with=FALSE]),
+                          label=   dapply[ fold==1, clase01],
+                          weight=  dapply[ fold==1, ifelse(clase_ternaria=="BAJA+2", 1.0000001, 1.0)] ,
+                          free_raw_data= FALSE
+                        )
+
+  #genero el dataset de training con el formato que necesita LightGBM
+  dtrain  <- lgb.Dataset( data=    data.matrix(  dataset[ train==1 , campos_buenos, with=FALSE]),
+                          label=   dataset[ train==1, clase01],
+                          weight=  dataset[ train==1, ifelse(clase_ternaria=="BAJA+2", 1.0000001, 1.0)] ,
+                          free_raw_data= FALSE
+                        )
+
+
   param_basicos  <- list( objective= "binary",
                           metric= "custom",
                           first_metric_only= TRUE,
@@ -190,7 +209,6 @@ EstimarGanancia_lightgbm  <- function( x )
                           min_gain_to_split= 0.0, #por ahora, lo dejo fijo
                           #lambda_l1= 0.0,         #por ahora, lo dejo fijo
                           #lambda_l2= 0.0,         #por ahora, lo dejo fijo
-                          max_bin= 31,            #MAX BIN extremo, para  German y Daiana
                           num_iterations= 9999,   #un numero muy grande, lo limita early_stopping_rounds
                           early_stopping_rounds= 200,
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
@@ -321,9 +339,6 @@ EstimarGanancia_lightgbm  <- function( x )
 
 if( is.na(kexperimento ) )   kexperimento <- get_experimento()  #creo el experimento
 
-# Forma fea de mostrar el experimento al que voy
-cat(paste0('Experimento: ', kexperimento, '\n'))
-
 #en estos archivos quedan los resultados
 dir.create( paste0( "./work/E",  kexperimento, "/" ) )     #creo carpeta del experimento dentro de work
 
@@ -370,29 +385,12 @@ gc()
 
 campos_buenos  <- setdiff( colnames(dataset), c("clase_ternaria","clase01", "fold", "train", "subsampling" ) )
 
-#validacion es una mitad de 202011
-dvalid  <- lgb.Dataset( data=    data.matrix(  dapply[ fold==1, campos_buenos, with=FALSE]),
-                        label=   dapply[ fold==1, clase01],
-                        weight=  dapply[ fold==1, ifelse(clase_ternaria=="BAJA+2", 1.0000001, 1.0)] ,
-                        free_raw_data= FALSE
-                      )
 
 #undersampling para training
 dataset[  , train := 0L ]
 dataset[  foto_mes>=ktrain_desde & foto_mes<=ktrain_hasta &
           (clase01==1  | subsampling==1),
           train := 1L ]
-
-#genero el dataset de training con el formato que necesita LightGBM
-dtrain  <- lgb.Dataset( data=    data.matrix(  dataset[ train==1 , campos_buenos, with=FALSE]),
-                        label=   dataset[ train==1, clase01],
-                        weight=  dataset[ train==1, ifelse(clase_ternaria=="BAJA+2", 1.0000001, 1.0)] ,
-                        free_raw_data= FALSE
-                      )
-
-rm( dataset )
-gc()
-
 
 
 #Aqui comienza la configuracion de la Bayesian Optimization
@@ -427,16 +425,3 @@ if(!file.exists(kbayesiana)) {
 
 
 #-------------------------------------------------------
-#apagado de la maquina virtual, pero NO se borra
-#system( "sleep 10  &&  sudo shutdown -h now", wait=FALSE)
-
-#suicidio,  elimina la maquina virtual directamente
-system( "sleep 10  &&
-        export NAME=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/name -H 'Metadata-Flavor: Google') &&
-        export ZONE=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/zone -H 'Metadata-Flavor: Google') &&
-        gcloud --quiet compute instances delete $NAME --zone=$ZONE",
-        wait=FALSE )
-
-
-quit( save="no" )
-
