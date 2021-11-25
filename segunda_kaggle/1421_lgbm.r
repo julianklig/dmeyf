@@ -56,10 +56,10 @@ kexperimento  <- NA #NA si se corre la primera vez, un valor concreto si es para
 
 kscript       <- "1421_lgbm"
 
-karchivo_dataset   <-  "./datasets/dataset_epic_full_v121.csv.gz"
+karchivo_dataset   <-  "./datasets/dataset_epic_full_v096.csv.gz"
 
-kfecha_cutoff  <- 202001
-ktrain_desde   <- 202001
+kfecha_cutoff  <- 201907
+ktrain_desde   <- 201907
 ktrain_hasta   <- 202009
 
 
@@ -425,3 +425,18 @@ if(!file.exists(kbayesiana)) {
 
 
 #-------------------------------------------------------
+
+#apagado de la maquina virtual, pero NO se borra
+#system( "sleep 10  &&  sudo shutdown -h now", wait=FALSE)
+
+#suicidio,  elimina la maquina virtual directamente
+system( "sleep 10  &&
+        export NAME=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/name -H 'Metadata-Flavor: Google') &&
+        export ZONE=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/zone -H 'Metadata-Flavor: Google') &&
+        gcloud --quiet compute instances delete $NAME --zone=$ZONE",
+        wait=FALSE )
+
+
+quit( save="no" )
+
+
