@@ -13,7 +13,7 @@ require("lightgbm")
 
 setwd("~/buckets/b1/")
 
-karch_dataset   <-  "./datasets/dataset_epic_full_v121.csv.gz"
+karch_dataset   <-  "./datasets/dataset_epic_full_v096.csv.gz"
 ksalida  <- "semillerio"
 
 kexperimento  <- NA
@@ -25,15 +25,15 @@ kcantidad_semillas  <- 200
 #ATENCION
 #aqui deben ir los mejores valores que salieron de la optimizacion bayesiana
 x  <- list()
-x$gleaf_size   <- 85.53726
-x$gnum_leaves  <- 0.374443
-x$learning_rate <- 0.1034631
-x$feature_fraction <- 0.9439827
-x$lambda_l1  <- 35.16957
-x$lambda_l2  <- 44.21577
-x$max_bin  <- 31
-x$num_iterations  <- 166
-x$pos_ratio  <- 0.04007766
+x$gleaf_size   <- 88.44999
+x$gnum_leaves  <- 0.9275848
+x$learning_rate <- 0.1592769
+x$feature_fraction <- 0.7635271
+x$lambda_l1  <- 17.55596
+x$lambda_l2  <- 135.5717
+x$max_bin  <- 78
+x$num_iterations  <- 193
+x$pos_ratio  <- 0.04051283
 
 
 #------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ ksemillas  <- sample(primos)[ 1:kcantidad_semillas ]   #me quedo con CANTIDAD_SE
 #cargo el dataset donde voy a entrenar
 dataset  <- fread(karch_dataset)
 
-dataset  <- dataset[ foto_mes >= 202001 ]
+dataset  <- dataset[ foto_mes >= 201907 ]
 gc()
 
 
@@ -99,7 +99,7 @@ dataset[ , clase01 := ifelse( clase_ternaria=="CONTINUA", 0L, 1L) ]
 
 
 dataset[  , generacion := 0L ]
-dataset[  foto_mes>=202001 & foto_mes<=202011, generacion := 1L ]
+dataset[  foto_mes>=201907 & foto_mes<=202011, generacion := 1L ]
 
 
 #los campos que se van a utilizar
@@ -169,7 +169,7 @@ for( semilla in  ksemillas)
   tb_predicciones[  , paste0( "pred_", isemilla ) :=  prediccion ]  #guardo el resultado de esta prediccion
 
 
-  if(  isemilla %% 10 == 0 )  #imprimo cada 10 semillas
+  if(  isemilla %% 40 == 0 )  #imprimo cada 40 semillas
   {
     #Genero la entrega para Kaggle
     entrega  <- as.data.table( list( "numero_de_cliente"= dfuturo[  , numero_de_cliente],
@@ -189,7 +189,7 @@ for( semilla in  ksemillas)
 
 
 
-    for(  corte  in seq( 11000, 14000, 1000) ) #imprimo cortes en 10000, 11000, 12000, 13000, 14000 y 15000
+    for(  corte  in seq( 10000, 15000, 500) ) #imprimo cortes en 10000, 11000, 12000, 13000, 14000 y 15000
     {
       entrega[ ,  Predicted := 0L ]
       entrega[ 1:corte,  Predicted := 1L ]  #me quedo con los primeros
@@ -203,4 +203,20 @@ for( semilla in  ksemillas)
 
 
 }
+
+#-------------------------------------------------------
+
+#apagado de la maquina virtual, pero NO se borra
+#system( "sleep 10  &&  sudo shutdown -h now", wait=FALSE)
+
+#suicidio,  elimina la maquina virtual directamente
+system( "sleep 10  &&
+        export NAME=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/name -H 'Metadata-Flavor: Google') &&
+        export ZONE=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/zone -H 'Metadata-Flavor: Google') &&
+        gcloud --quiet compute instances delete $NAME --zone=$ZONE",
+        wait=FALSE )
+
+
+quit( save="no" )
+
 
