@@ -27,7 +27,11 @@ gc()
 
 dataset  <- fread( "datasets/dataset_clusterizado_v100.csv.gz")
 
-datasetOri <- merge(datasetOri, dataset[, .SD, .SDcols= c("numero_de_cliente", "cluster2")], by = "numero_de_cliente")
+# me quedo solo con los numeros de cliente y cluster
+dataset  <- dataset[, .SD, .SDcols = c("numero_de_cliente", "cluster2")]
+gc()
+
+datasetOri <- merge(datasetOri, dataset, by = "numero_de_cliente")
 seguimiento <- datasetOri[ foto_mes <= 202011, .SD, .SDcols = -c("clase_ternaria")]
 
 cluster_sizes <- dataset[ , .N,  cluster2 ]  #tamaño de los clusters
@@ -37,6 +41,7 @@ gc()
 
 
 means <- seguimiento[, lapply(.SD, median, na.rm=TRUE), by=list(meses_muerte, cluster2) , .SDcols=-c("numero_de_cliente", "meses_muerte")]
+stdevs <- seguimiento[, lapply(.SD, sd, na.rm=TRUE), by=list(meses_muerte, cluster2) , .SDcols=-c("numero_de_cliente", "meses_muerte")]
 setorder(means, cols = foto_mes)
 
 campos_buenos <- setdiff(colnames(means), c("foto_mes", "cluster2", "meses_muerte"))
@@ -44,7 +49,8 @@ campos_buenos <- setdiff(colnames(means), c("foto_mes", "cluster2", "meses_muert
 pdf( paste0( paste0("./work/clusters_variables.pdf" ) ), 12, 8)
 #campo = "ctrx_quarter"
 for( campo in  campos_buenos ) {
-  tbl <- means[,.SD, .SDcols = c("meses_muerte", "cluster2", campo)]
+  #tbl <- means[,.SD, .SDcols = c("meses_muerte", "cluster2", campo)]
+  tbl <- seguimiento[,.SD, .SDcols = c("meses_muerte", "cluster2", campo)]
   print(
     ggplot(tbl,
       aes(x=-meses_muerte,
@@ -52,7 +58,7 @@ for( campo in  campos_buenos ) {
         color=as.character(cluster2)
       )
     ) +
-    geom_line() +
+    geom_smooth(level = 0.97) +
     theme(axis.text.x = element_text(angle = 90)) +
     scale_x_continuous(breaks=seq(-20, 0)) +
     ggtitle(paste0("Media de clusters - ", campo, " - ", paste(cluster_sizes$N, collapse = ", "))) +
