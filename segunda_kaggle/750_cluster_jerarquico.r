@@ -78,7 +78,7 @@ while(  h>0  &  !( distintos >=6 & distintos <=7 ) )
 # salvo el dataset con clusters para análisis
 
 fwrite( dataset,
-      paste0( "./datasets/dataset_clusterizado", "v100", ".csv.gz" ),
+      paste0( "./datasets/dataset_clusterizado_", "v100", ".csv.gz" ),
       logical01 = TRUE,
       sep= "," )
 
