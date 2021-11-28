@@ -10,39 +10,53 @@ setwd( "~/buckets/b1/" )
 
 #leo el dataset , aqui se puede usar algun super dataset con Feature Engineering
 datasetOri  <- fread( "datasetsOri/paquete_premium.csv.gz")
-datasetOri  <-  datasetOri[ foto_mes>=202001  & foto_mes<=202011, ]
+setorder(  datasetOri,  numero_de_cliente, -foto_mes )   #ordeno, pero a la inversa
+
+datasetOri[   , morire := 0 ]
+datasetOri[ clase_ternaria=="BAJA+1" , morire := 1 ]  #si tengo un BAJA+1 , ese mes se que voy a morir
+
+datasetOri[  , morire := cummax( morire ), numero_de_cliente ]   #calculo el maximo acumulado hace atras
+datasetOri[  , meses_muerte := cumsum( morire ), numero_de_cliente ]   #calculo la suma acumulada
+
+
+datasetOri[  meses_muerte==0,  meses_muerte := NA ]
+datasetOri[  , morire := NULL ]
+
+datasetOri  <-  datasetOri[ foto_mes>=201901  & foto_mes<=202011, ]
 gc()
 
 dataset  <- fread( "datasets/dataset_clusterizado_v100.csv.gz")
+
 datasetOri <- merge(datasetOri, dataset[, .SD, .SDcols= c("numero_de_cliente", "cluster2")], by = "numero_de_cliente")
-seguimiento <- datasetOri[numero_de_cliente %in% datasetOri[foto_mes == 202011]$numero_de_cliente & foto_mes <= 202011, .SD, .SDcols = -c("clase_ternaria")]
+seguimiento <- datasetOri[ foto_mes <= 202011, .SD, .SDcols = -c("clase_ternaria")]
+
+cluster_sizes <- dataset[ , .N,  cluster2 ]  #tamaño de los clusters
 
 rm(datasetOri, dataset)
 gc()
 
 
-means <- seguimiento[, lapply(.SD, mean, na.rm=TRUE), by=list(foto_mes, cluster2) , .SDcols=-c("numero_de_cliente")]
+means <- seguimiento[, lapply(.SD, mean, na.rm=TRUE), by=list(meses_muerte, cluster2) , .SDcols=-c("numero_de_cliente", "meses_muerte")]
 setorder(means, cols = foto_mes)
 
-campos_buenos <- setdiff(colnames(means), c("foto_mes", "cluster2"))
-cluster_sizes <- seguimiento[ foto_mes==202011 , .N,  cluster2 ]  #tamaño de los clusters
+campos_buenos <- setdiff(colnames(means), c("foto_mes", "cluster2", "meses_muerte"))
 
 pdf( paste0( paste0("./work/clusters_variables.pdf" ) ), 12, 8)
 #campo = "ctrx_quarter"
 for( campo in  campos_buenos ) {
-  tbl <- means[,.SD, .SDcols = c("foto_mes", "cluster2", campo)]
+  tbl <- means[,.SD, .SDcols = c("meses_muerte", "cluster2", campo)]
   print(
     ggplot(tbl,
-      aes(x=as.Date(paste0(as.character(foto_mes), '01'), format='%Y%m%d'),
+      aes(x=-meses_muerte,
         y=get(campo),
         color=as.character(cluster2)
       )
     ) +
     geom_line() +
     theme(axis.text.x = element_text(angle = 90)) +
-    scale_x_date(date_breaks = "1 month", date_labels = "%Y%m") +
+    #scale_x_date(date_breaks = "1 month", date_labels = "%Y%m") +
     ggtitle(paste0("Promedio de clusters - ", campo, " - ", paste(cluster_sizes$N, collapse = ", "))) +
-        xlab("Período") +
+        xlab("Meses a baja") +
         ylab(campo)
   )
 }
