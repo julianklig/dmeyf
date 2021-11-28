@@ -56,7 +56,7 @@ kexperimento  <- NA #NA si se corre la primera vez, un valor concreto si es para
 
 kscript       <- "1421_lgbm"
 
-karchivo_dataset   <-  "./datasets/dataset_epic_full_v096.csv.gz"
+karchivo_dataset   <-  "./datasets/dataset_epic_full_v121.csv.gz"
 
 kfecha_cutoff  <- 201907
 ktrain_desde   <- 201907
@@ -377,7 +377,7 @@ dataset[ , train:=0L]
 dapply  <- copy( dataset[  foto_mes %in% c(202011) ] )
 particionar( dapply,  c(1,1), agrupa="clase_ternaria", seed=17 )
 
-particionar( dataset,  c(1,9), agrupa=c("foto_mes","clase_ternaria"), campo="subsampling", seed=17 )
+particionar( dataset,  c(1,19), agrupa=c("foto_mes","clase_ternaria"), campo="subsampling", seed=17 )
 
 #reduzco el tamaño del dataset y libero memoria
 dataset <-  dataset[  (clase01==1  | subsampling==1) ]
