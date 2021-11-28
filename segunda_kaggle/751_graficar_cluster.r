@@ -36,7 +36,7 @@ rm(datasetOri, dataset)
 gc()
 
 
-means <- seguimiento[, lapply(.SD, mean, na.rm=TRUE), by=list(meses_muerte, cluster2) , .SDcols=-c("numero_de_cliente", "meses_muerte")]
+means <- seguimiento[, lapply(.SD, median, na.rm=TRUE), by=list(meses_muerte, cluster2) , .SDcols=-c("numero_de_cliente", "meses_muerte")]
 setorder(means, cols = foto_mes)
 
 campos_buenos <- setdiff(colnames(means), c("foto_mes", "cluster2", "meses_muerte"))
@@ -54,8 +54,8 @@ for( campo in  campos_buenos ) {
     ) +
     geom_line() +
     theme(axis.text.x = element_text(angle = 90)) +
-    #scale_x_date(date_breaks = "1 month", date_labels = "%Y%m") +
-    ggtitle(paste0("Promedio de clusters - ", campo, " - ", paste(cluster_sizes$N, collapse = ", "))) +
+    scale_x_continuous(breaks=seq(-20, 0)) +
+    ggtitle(paste0("Media de clusters - ", campo, " - ", paste(cluster_sizes$N, collapse = ", "))) +
         xlab("Meses a baja") +
         ylab(campo)
   )
